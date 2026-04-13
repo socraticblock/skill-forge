@@ -490,7 +490,19 @@
   border-top: 1px solid var(--color-border);
 }
 
-/* Preview pane */
+/* ─── Monaco editor wrapper ─────────────────────────────────────────────────── */
+.monaco-wrapper {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card);
+}
+
+.monaco-wrapper .body-editor {
+  border: none;
+}
+
+/* ─── Preview pane */
 .preview-pane {
   background: var(--color-surface);
 }

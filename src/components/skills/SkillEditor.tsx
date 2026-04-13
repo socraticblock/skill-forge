@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { Save, RotateCcw, Eye, Edit3 } from 'lucide-react'
+import Editor from '@monaco-editor/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -203,16 +204,29 @@ export function SkillEditor() {
               </div>
             </div>
 
-            {/* Body */}
+            {/* Body — Monaco editor */}
             <div className="form-field" style={{ marginTop: '1.25rem' }}>
               <label className="form-label">Skill Content (Markdown)</label>
-              <Textarea
-                className="body-editor"
-                placeholder={'You are an expert code reviewer...\n\nFollow these steps:\n1. Read the code carefully\n2. Check for security issues\n3. Suggest improvements'}
-                value={editingSkill.body}
-                onChange={(e) => handleBodyChange(e.target.value)}
-                spellCheck={false}
-              />
+              <div className="monaco-wrapper">
+                <Editor
+                  height="340px"
+                  defaultLanguage="markdown"
+                  value={editingSkill.body}
+                  onChange={(val) => handleBodyChange(val ?? '')}
+                  theme="vs-dark"
+                  options={{
+                    fontSize: 13,
+                    fontFamily: "'Geist Mono', 'Fira Code', monospace",
+                    minimap: { enabled: false },
+                    lineNumbers: 'on',
+                    wordWrap: 'on',
+                    scrollBeyondLastLine: false,
+                    padding: { top: 12, bottom: 12 },
+                    renderLineHighlight: 'line',
+                    smoothScrolling: true,
+                  }}
+                />
+              </div>
             </div>
 
             {/* Verification */}
