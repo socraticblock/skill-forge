@@ -1,9 +1,13 @@
 import { useState, useCallback } from 'react'
 import { Wand2, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import { usePromptBuilderStore } from '../../stores/promptBuilderStore'
 import { useSkillsStore } from '../../stores/skillsStore'
 import { PromptCard } from './PromptCard'
 import type { PromptVariation } from '../../types/skill'
+
+const API_BASE = 'http://localhost:8080'
 
 const VARIATION_DESCRIPTIONS: Record<number, string> = {
   1: 'One focused, refined prompt',
@@ -12,12 +16,10 @@ const VARIATION_DESCRIPTIONS: Record<number, string> = {
   4: 'Four diverse styles to find your perfect fit',
 }
 
-const API_BASE = "http://localhost:8080"
-
 async function generateFromServer(goal: string, count: number): Promise<PromptVariation[]> {
   const res = await fetch(`${API_BASE}/generate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ goal, variation_count: count }),
   })
 
@@ -63,7 +65,7 @@ export function PromptBuilder() {
       const newVariations = await generateFromServer(goal, variationCount)
       setVariations(newVariations)
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Generation failed"
+      const msg = err instanceof Error ? err.message : 'Generation failed'
       setError(msg)
     } finally {
       setIsGenerating(false)
@@ -101,11 +103,11 @@ export function PromptBuilder() {
 
       <div className="prompt-input-section">
         <label className="input-label">What do you want your AI to help you with?</label>
-        <textarea
-          className="goal-textarea"
+        <Textarea
           placeholder="e.g. Debug my Python code and help me find the bug, or Review my pull request for security issues, or Teach me how neural networks work..."
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
+          className="goal-textarea"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
               handleGenerate()
@@ -131,14 +133,14 @@ export function PromptBuilder() {
           </div>
         </div>
 
-        <button
-          className="btn btn-primary generate-btn"
+        <Button
           onClick={handleGenerate}
           disabled={!goal.trim() || isGenerating}
+          className="generate-btn"
         >
           {isGenerating ? (
             <>
-              <Loader2 size={15} className="spin" style={{ animation: 'spin 0.8s linear infinite' }} />
+              <Loader2 size={15} className="animate-spin" />
               Generating...
             </>
           ) : (
@@ -147,21 +149,20 @@ export function PromptBuilder() {
               Generate Prompts
             </>
           )}
-        </button>
+        </Button>
       </div>
 
-      {error && <div className="error-state">{error}</div>}
-
-      {isGenerating && (
-        <div className="loading-state">
-          <div className="spinner" />
-          <p>Generating prompt variations...</p>
+      {error && (
+        <div className="error-state">
+          {error}
+          <br />
+          <small>Make sure the Python proxy server is running: <code>python server/minimax_proxy.py</code></small>
         </div>
       )}
 
       {!isGenerating && variations.length > 0 && (
         <>
-          <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-text-muted)', margin: '1.5rem 0 0.75rem' }}>
+          <h3 className="variations-heading">
             {variations.length} Prompt {variations.length === 1 ? 'Variation' : 'Variations'} — pick your favorite
           </h3>
           <div className="variations-grid">
@@ -179,9 +180,9 @@ export function PromptBuilder() {
       )}
 
       {!isGenerating && variations.length === 0 && !error && (
-        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--color-text-dim)', fontSize: '0.875rem' }}>
+        <div className="empty-prompt-state">
           <Wand2 size={24} style={{ opacity: 0.3, marginBottom: '0.5rem' }} />
-          <p style={{ margin: 0 }}>Enter a goal above and generate prompt variations</p>
+          <p>Enter a goal above and generate prompt variations</p>
         </div>
       )}
     </div>

@@ -1,17 +1,12 @@
 import { useEffect } from 'react'
-import { BookOpen, Wand2, Layers } from 'lucide-react'
+import { Layers, BookOpen, Wand2 } from 'lucide-react'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useSkillsStore } from './stores/skillsStore'
 import { SkillsBrowser } from './components/skills/SkillsBrowser'
 import { SkillEditor } from './components/skills/SkillEditor'
 import { PromptBuilder } from './components/prompts/PromptBuilder'
 import type { TabId } from './types/skill'
 import './App.css'
-
-const tabs: { id: TabId; label: string; icon: typeof BookOpen }[] = [
-  { id: 'skills', label: 'Skills', icon: Layers },
-  { id: 'editor', label: 'Editor', icon: BookOpen },
-  { id: 'prompts', label: 'Prompts', icon: Wand2 },
-]
 
 function App() {
   const { activeTab, setActiveTab } = useSkillsStore()
@@ -22,9 +17,9 @@ function App() {
 
   return (
     <div className="app-shell">
-      {/* Header */}
       <header className="app-header">
         <div className="header-inner">
+          {/* Brand */}
           <div className="header-brand">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect width="28" height="28" rx="7" fill="#7c6fff" />
@@ -35,20 +30,25 @@ function App() {
             <span className="brand-tag">Hermes</span>
           </div>
 
-          {/* Tab nav */}
-          <nav className="tab-nav">
-            {tabs.map(({ id, label, icon: Icon }) => (
-              <button
-                key={id}
-                className={`tab-btn ${activeTab === id ? 'active' : ''}`}
-                onClick={() => setActiveTab(id)}
-              >
-                <Icon size={15} />
-                {label}
-              </button>
-            ))}
-          </nav>
+          {/* Tab navigation */}
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabId)} className="tab-nav">
+            <TabsList variant="line" className="tab-list">
+              <TabsTrigger value="skills" className="tab-trigger">
+                <Layers size={15} />
+                Skills
+              </TabsTrigger>
+              <TabsTrigger value="editor" className="tab-trigger">
+                <BookOpen size={15} />
+                Editor
+              </TabsTrigger>
+              <TabsTrigger value="prompts" className="tab-trigger">
+                <Wand2 size={15} />
+                Prompts
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
+          {/* Links */}
           <div className="header-links">
             <a
               href="https://hermes-agent.nousresearch.com/docs/skills/"

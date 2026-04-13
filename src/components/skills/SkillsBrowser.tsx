@@ -1,10 +1,20 @@
 import { useState, useEffect } from 'react'
 import { Search, Plus, Trash2 } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { useSkillsStore } from '../../stores/skillsStore'
 import { skillToFormData } from '../../lib/parseSkill'
 import { SkillCard } from './SkillCard'
 import type { Skill } from '../../types/skill'
-// Demo skills to show when no real data is available
+
 const DEMO_SKILLS: Skill[] = [
   {
     frontmatter: {
@@ -103,9 +113,9 @@ const DEMO_SKILLS: Skill[] = [
 export function SkillsBrowser() {
   const { skills, setSkills, setEditingSkill, setCurrentSkill, setActiveTab, deleteSkill, searchQuery, setSearchQuery } =
     useSkillsStore()
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<Skill | null>(null)
 
-  // Load demo skills on mount (in real app, this would be Hermes MCP calls)
+  // Load demo skills on mount
   useEffect(() => {
     if (skills.length === 0) {
       setSkills(DEMO_SKILLS)
@@ -142,9 +152,11 @@ export function SkillsBrowser() {
     setActiveTab('editor')
   }
 
-  const handleDeleteSkill = (name: string) => {
-    deleteSkill(name)
-    setConfirmDelete(null)
+  const handleConfirmDelete = () => {
+    if (deleteTarget) {
+      deleteSkill(deleteTarget.frontmatter.name)
+      setDeleteTarget(null)
+    }
   }
 
   return (
@@ -154,17 +166,17 @@ export function SkillsBrowser() {
         <div className="browser-actions">
           <div className="search-input">
             <Search size={14} />
-            <input
-              type="text"
+            <Input
               placeholder="Search skills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-field"
             />
           </div>
-          <button className="btn btn-primary" onClick={handleNewSkill}>
+          <Button onClick={handleNewSkill} className="btn-primary">
             <Plus size={15} />
             New Skill
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -177,49 +189,52 @@ export function SkillsBrowser() {
           </div>
           <h3>No skills found</h3>
           <p>{searchQuery ? 'Try a different search term' : 'Create your first skill to get started'}</p>
-          <button className="btn btn-primary" onClick={handleNewSkill}>
+          <Button onClick={handleNewSkill}>
             <Plus size={15} />
             New Skill
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="skills-grid">
           {filteredSkills.map((skill) => (
-            <div key={skill.frontmatter.name} className="skill-card-wrapper" style={{ position: 'relative' }}>
-              {confirmDelete === skill.frontmatter.name ? (
-                <div className="skill-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--color-text)' }}>
-                    Delete <strong>{skill.frontmatter.name}</strong>?
-                  </p>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button className="btn btn-danger btn-sm" onClick={() => handleDeleteSkill(skill.frontmatter.name)}>
-                      Delete
-                    </button>
-                    <button className="btn btn-ghost btn-sm" onClick={() => setConfirmDelete(null)}>
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <SkillCard skill={skill} onClick={() => handleOpenSkill(skill)} />
-                  <button
-                    className="btn btn-ghost btn-sm"
-                    style={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setConfirmDelete(skill.frontmatter.name)
-                    }}
-                    title="Delete skill"
-                  >
-                    <Trash2 size={13} />
-                  </button>
-                </>
-              )}
+            <div key={skill.frontmatter.name} className="skill-card-wrapper">
+              <SkillCard skill={skill} onClick={() => handleOpenSkill(skill)} />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setDeleteTarget(skill)
+                }}
+                title="Delete skill"
+              >
+                <Trash2 size={13} />
+              </Button>
             </div>
           ))}
         </div>
       )}
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete skill?</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete <strong>{deleteTarget?.frontmatter.name}</strong>? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteTarget(null)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

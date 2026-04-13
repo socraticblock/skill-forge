@@ -1,5 +1,9 @@
 import { useCallback } from 'react'
 import { Save, RotateCcw, Eye, Edit3 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSkillsStore } from '../../stores/skillsStore'
 import { serializeSkill, skillToFilename } from '../../lib/parseSkill'
 import { SkillPreview } from './SkillPreview'
@@ -110,10 +114,10 @@ export function SkillEditor() {
         </div>
         <h3>No skill selected</h3>
         <p>Choose a skill from the library or create a new one.</p>
-        <button className="btn btn-primary" onClick={() => setActiveTab('skills')}>
+        <Button onClick={() => setActiveTab('skills')}>
           <Edit3 size={15} />
           Browse Skills
-        </button>
+        </Button>
       </div>
     )
   }
@@ -122,22 +126,20 @@ export function SkillEditor() {
     <div className="editor-container animate-fade-in">
       {/* Top bar */}
       <div className="editor-topbar">
-        <h2>
-          {currentSkill ? `Editing: ${currentSkill.frontmatter.name}` : 'New Skill'}
-        </h2>
+        <h2>{currentSkill ? `Editing: ${currentSkill.frontmatter.name}` : 'New Skill'}</h2>
         <div className="editor-actions">
           {isDirty && <span className="dirty-indicator">● Unsaved changes</span>}
-          <button className="btn btn-ghost btn-sm" onClick={handleExportMarkdown} title="Export as .md file">
+          <Button variant="ghost" size="sm" onClick={handleExportMarkdown}>
             Export .md
-          </button>
-          <button className="btn btn-secondary btn-sm" onClick={handleReset} disabled={!isDirty}>
+          </Button>
+          <Button variant="secondary" size="sm" onClick={handleReset} disabled={!isDirty}>
             <RotateCcw size={13} />
             Reset
-          </button>
-          <button className="btn btn-primary btn-sm" onClick={handleSave} disabled={!editingSkill.name.trim()}>
+          </Button>
+          <Button size="sm" onClick={handleSave} disabled={!editingSkill.name.trim()}>
             <Save size={13} />
             Save Skill
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -153,9 +155,7 @@ export function SkillEditor() {
             <div className="meta-form">
               <div className="form-field">
                 <label className="form-label">Skill Name *</label>
-                <input
-                  className="form-input"
-                  type="text"
+                <Input
                   placeholder="e.g. code-review, debug-socratic"
                   value={editingSkill.name}
                   onChange={(e) => updateField('name', e.target.value)}
@@ -164,38 +164,37 @@ export function SkillEditor() {
 
               <div className="form-field">
                 <label className="form-label">Description</label>
-                <textarea
-                  className="form-input form-textarea"
+                <Textarea
                   placeholder="What does this skill do? Who is it for?"
                   value={editingSkill.description}
                   onChange={(e) => updateField('description', e.target.value)}
+                  className="form-textarea"
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 <div className="form-field">
                   <label className="form-label">Category</label>
-                  <select
-                    className="form-input form-select"
-                    value={editingSkill.category}
-                    onChange={(e) => updateField('category', e.target.value)}
-                  >
-                    <option value="general">General</option>
-                    <option value="development">Development</option>
-                    <option value="debugging">Debugging</option>
-                    <option value="analysis">Analysis</option>
-                    <option value="writing">Writing</option>
-                    <option value="research">Research</option>
-                    <option value="creative">Creative</option>
-                    <option value="teaching">Teaching</option>
-                  </select>
+                  <Select value={editingSkill.category} onValueChange={(v) => updateField('category', v)}>
+                    <SelectTrigger className="form-select">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="general">General</SelectItem>
+                      <SelectItem value="development">Development</SelectItem>
+                      <SelectItem value="debugging">Debugging</SelectItem>
+                      <SelectItem value="analysis">Analysis</SelectItem>
+                      <SelectItem value="writing">Writing</SelectItem>
+                      <SelectItem value="research">Research</SelectItem>
+                      <SelectItem value="creative">Creative</SelectItem>
+                      <SelectItem value="teaching">Teaching</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="form-field">
                   <label className="form-label">Tags (comma separated)</label>
-                  <input
-                    className="form-input"
-                    type="text"
+                  <Input
                     placeholder="debugging, python, socratic"
                     value={editingSkill.tags}
                     onChange={(e) => updateField('tags', e.target.value)}
@@ -207,8 +206,8 @@ export function SkillEditor() {
             {/* Body */}
             <div className="form-field" style={{ marginTop: '1.25rem' }}>
               <label className="form-label">Skill Content (Markdown)</label>
-              <textarea
-                className="form-input body-editor"
+              <Textarea
+                className="body-editor"
                 placeholder={'You are an expert code reviewer...\n\nFollow these steps:\n1. Read the code carefully\n2. Check for security issues\n3. Suggest improvements'}
                 value={editingSkill.body}
                 onChange={(e) => handleBodyChange(e.target.value)}
@@ -220,8 +219,7 @@ export function SkillEditor() {
             <div className="verification-field">
               <div className="form-field">
                 <label className="form-label">Verification (how to test this skill)</label>
-                <textarea
-                  className="form-input form-textarea"
+                <Textarea
                   placeholder="Describe how to verify this skill works correctly..."
                   value={editingSkill.verification}
                   onChange={(e) => updateField('verification', e.target.value)}
