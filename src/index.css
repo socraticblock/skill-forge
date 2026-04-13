@@ -4,64 +4,123 @@
 @import "@fontsource-variable/geist";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant light (&:is(.light *));
 
-/* ─── Design tokens — dark theme ─────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   CREAM LIGHT THEME  — warm, premium, high-end
+   ══════════════════════════════════════════════════════════════════════════════ */
 @theme {
-  --color-bg: #0f0f14;
-  --color-surface: #18181f;
-  --color-surface-hover: #1f1f28;
-  --color-border: #2a2a36;
-  --color-border-focus: #3d3d52;
-  --color-accent: #7c6fff;
-  --color-accent-hover: #9d91ff;
-  --color-success: #34d399;
-  --color-error: #f87171;
-  --color-warning: #fbbf24;
-  --color-text: #e4e4e7;
-  --color-text-muted: #71717a;
-  --color-text-dim: #52525b;
-
   --font-sans: 'Geist Variable', sans-serif;
   --font-mono: 'Geist Mono', 'Fira Code', ui-monospace, monospace;
 }
 
-/* ─── Dark theme — override shadcn oklch defaults ────────────────────────── */
+/* ─── Light (cream) theme ────────────────────────────────────────────────── */
 :root,
+.light {
+  --background:    #F9F5F0;
+  --foreground:   #292420;
+  --card:         #F2EDE6;
+  --card-foreground: #292420;
+  --popover:      #F9F5F0;
+  --popover-foreground: #292420;
+  --primary:      #6B4FA0;
+  --primary-foreground: #FFFFFF;
+  --secondary:    #E8E0D6;
+  --secondary-foreground: #4A3728;
+  --muted:        #E8E0D6;
+  --muted-foreground: #8C7E6E;
+  --accent:       #E8E0D6;
+  --accent-foreground: #4A3728;
+  --destructive:  #A84040;
+  --destructive-foreground: #FFFFFF;
+  --border:       #DDD5C8;
+  --input:        #E8E0D6;
+  --ring:         #6B4FA0;
+  --radius:       0.5rem;
+
+  --chart-1: #6B4FA0;
+  --chart-2: #5A8C6F;
+  --chart-3: #B8864A;
+  --chart-4: #A84040;
+  --chart-5: #4A7A9C;
+
+  --sidebar:         #F2EDE6;
+  --sidebar-foreground: #292420;
+  --sidebar-primary:    #6B4FA0;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:    #E8E0D6;
+  --sidebar-accent-foreground: #4A3728;
+  --sidebar-border:    #DDD5C8;
+  --sidebar-ring:      #6B4FA0;
+
+  /* ─── Semantic tokens ─────────────────────────────────────────── */
+  --color-bg:           #F9F5F0;
+  --color-surface:       #F2EDE6;
+  --color-surface-hover:  #EAE3DA;
+  --color-border:         #DDD5C8;
+  --color-border-focus:   #B8A898;
+  --color-accent:        #6B4FA0;
+  --color-accent-hover:  #5A3F8A;
+  --color-success:        #4A7C59;
+  --color-error:          #A84040;
+  --color-warning:        #B8863A;
+  --color-text:           #292420;
+  --color-text-muted:     #8C7E6E;
+  --color-text-dim:       #ADA08A;
+}
+
+/* ─── Dark theme ───────────────────────────────────────────────────────── */
 .dark {
   --background: #0f0f14;
   --foreground: #e4e4e7;
-  --card: #18181f;
+  --card:      #18181f;
   --card-foreground: #e4e4e7;
-  --popover: #18181f;
+  --popover:   #18181f;
   --popover-foreground: #e4e4e7;
-  --primary: #7c6fff;
+  --primary:   #7c6fff;
   --primary-foreground: #ffffff;
   --secondary: #1f1f28;
   --secondary-foreground: #e4e4e7;
-  --muted: #18181f;
+  --muted:     #18181f;
   --muted-foreground: #71717a;
-  --accent: #1f1f28;
+  --accent:    #1f1f28;
   --accent-foreground: #e4e4e7;
   --destructive: #f87171;
   --destructive-foreground: #ffffff;
-  --border: #2a2a36;
-  --input: #18181f;
-  --ring: #7c6fff;
-  --radius: 0.5rem;
+  --border:    #2a2a36;
+  --input:     #18181f;
+  --ring:      #7c6fff;
+  --radius:    0.5rem;
 
   --chart-1: #7c6fff;
   --chart-2: #34d399;
   --chart-3: #fbbf24;
   --chart-4: #f87171;
   --chart-5: #60a5fa;
-  --sidebar: #18181f;
+
+  --sidebar:         #18181f;
   --sidebar-foreground: #e4e4e7;
-  --sidebar-primary: #7c6fff;
+  --sidebar-primary:    #7c6fff;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1f1f28;
+  --sidebar-accent:    #1f1f28;
   --sidebar-accent-foreground: #e4e4e7;
-  --sidebar-border: #2a2a36;
-  --sidebar-ring: #7c6fff;
+  --sidebar-border:    #2a2a36;
+  --sidebar-ring:      #7c6fff;
+
+  /* ─── Semantic tokens ─────────────────────────────────────────── */
+  --color-bg:           #0f0f14;
+  --color-surface:       #18181f;
+  --color-surface-hover:  #1f1f28;
+  --color-border:         #2a2a36;
+  --color-border-focus:   #3d3d52;
+  --color-accent:         #7c6fff;
+  --color-accent-hover:   #9d91ff;
+  --color-success:        #34d399;
+  --color-error:          #f87171;
+  --color-warning:        #fbbf24;
+  --color-text:           #e4e4e7;
+  --color-text-muted:     #71717a;
+  --color-text-dim:       #52525b;
 }
 
 /* ─── Base resets ─────────────────────────────────────────────────────────── */
@@ -81,9 +140,14 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 html {
+  color-scheme: light;
+}
+
+.dark html {
   color-scheme: dark;
 }
 
@@ -129,14 +193,14 @@ html {
 .markdown-preview code {
   font-family: var(--font-mono);
   font-size: 0.875em;
-  background: var(--card);
+  background: var(--muted);
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 0.125rem 0.375rem;
   color: var(--primary);
 }
 .markdown-preview pre {
-  background: var(--card);
+  background: var(--muted);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1rem;
@@ -153,7 +217,7 @@ html {
   border-left: 3px solid var(--primary);
   margin: 0 0 1rem;
   padding: 0.5rem 1rem;
-  background: var(--card);
+  background: var(--muted);
   border-radius: 0 6px 6px 0;
 }
 .markdown-preview strong { font-weight: 600; }
@@ -162,7 +226,7 @@ html {
 .markdown-preview hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
 .markdown-preview table { width: 100%; border-collapse: collapse; margin: 0 0 1rem; }
 .markdown-preview th, .markdown-preview td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
-.markdown-preview th { background: var(--card); font-weight: 600; }
+.markdown-preview th { background: var(--muted); font-weight: 600; }
 
 /* ─── Animations ───────────────────────────────────────────────────────────── */
 @keyframes fadeIn {
@@ -179,5 +243,5 @@ html {
   cursor: grabbing;
 }
 .drag-over {
-  background: var(--surface-hover);
+  background: var(--color-surface-hover);
 }

@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
-import { Layers, BookOpen, Wand2 } from 'lucide-react'
+import { useEffect, useState, useCallback } from 'react'
+import { Layers, BookOpen, Wand2, Sun, Moon } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
 import { useSkillsStore } from './stores/skillsStore'
 import { SkillsBrowser } from './components/skills/SkillsBrowser'
 import { SkillEditor } from './components/skills/SkillEditor'
@@ -10,6 +11,16 @@ import './App.css'
 
 function App() {
   const { activeTab, setActiveTab } = useSkillsStore()
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+
+  const toggleTheme = useCallback(() => {
+    setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+    document.documentElement.classList.toggle('light', theme === 'light')
+  }, [theme])
 
   useEffect(() => {
     document.title = 'SkillForge — Hermes Skill Builder'
@@ -50,6 +61,15 @@ function App() {
 
           {/* Links */}
           <div className="header-links">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="theme-toggle"
+              onClick={toggleTheme}
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+            </Button>
             <a
               href="https://hermes-agent.nousresearch.com/docs/skills/"
               target="_blank"
