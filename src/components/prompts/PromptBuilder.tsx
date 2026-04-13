@@ -12,46 +12,26 @@ const VARIATION_DESCRIPTIONS: Record<number, string> = {
   4: 'Four diverse styles to find your perfect fit',
 }
 
-const TONES = ['Socratic', 'Directive', 'Collaborative', 'Expert']
-const STRUCTURES = ['Step-by-step', 'Conversational', 'Checklist', 'Narrative']
+const API_BASE = "http://localhost:8080"
 
-function generateVariation(id: string, goal: string, index: number): PromptVariation {
-  const toneIdx = index % TONES.length
-  const structIdx = (index + 2) % STRUCTURES.length
-  const tone = TONES[toneIdx]
-  const structure = STRUCTURES[structIdx]
+async function generateFromServer(goal: string, count: number): Promise<PromptVariation[]> {
+  const res = await fetch(`${API_BASE}/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ goal, variation_count: count }),
+  })
 
-  const toneInstructions: Record<string, string> = {
-    Socratic: 'Guide the user through questions. Ask targeted questions that lead them to discover the answer themselves. Use phrases like "What have you tried?", "What do you think causes...", "If we looked at it from..."',
-    Directive: 'Be direct and authoritative. Provide clear instructions and definitive guidance. Take charge of the problem-solving process with confidence.',
-    Collaborative: 'Work alongside the user as a partner. Share your thinking process openly. Use "Let\'s", "We can", "I suggest we try..."',
-    Expert: 'Draw on deep expertise. Reference specific patterns, principles, or past cases. Explain the "why" behind recommendations with technical depth.',
+  if (!res.ok) {
+    let msg = `Server error ${res.status}`
+    try {
+      const err = await res.json()
+      msg = err.error || msg
+    } catch { /* ignore */ }
+    throw new Error(msg)
   }
 
-  const structureInstructions: Record<string, string> = {
-    'Step-by-step': 'Present your response as a numbered sequence of clear, actionable steps.',
-    Conversational: 'Engage in a natural back-and-forth dialogue. Check understanding before proceeding to the next step.',
-    Checklist: 'Use a clear checklist format so the user can track their progress item by item.',
-    Narrative: 'Tell a story about how this problem was solved or how this approach came to be. Make it engaging and memorable.',
-  }
-
-  const prompt = `You are a helpful AI assistant with a ${tone.toLowerCase()} communication style.
-
-When helping with: ${goal}
-
-${toneInstructions[tone]}
-
-${structureInstructions[structure]}
-
-Focus on understanding the user's actual goal, not just the immediate request. Ask clarifying questions when the problem is ambiguous.`
-
-  return {
-    id,
-    title: `${tone} ${structure}`,
-    prompt: prompt.trim(),
-    tone,
-    structure,
-  }
+  const data = await res.json()
+  return data.variations as PromptVariation[]
 }
 
 export function PromptBuilder() {
@@ -79,15 +59,15 @@ export function PromptBuilder() {
     setError(null)
     clearVariations()
 
-    // Simulate AI generation delay
-    await new Promise((resolve) => setTimeout(resolve, 1200))
-
-    const newVariations: PromptVariation[] = Array.from({ length: variationCount }, (_, i) =>
-      generateVariation(`var-${Date.now()}-${i}`, goal, i)
-    )
-
-    setVariations(newVariations)
-    setIsGenerating(false)
+    try {
+      const newVariations = await generateFromServer(goal, variationCount)
+      setVariations(newVariations)
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Generation failed"
+      setError(msg)
+    } finally {
+      setIsGenerating(false)
+    }
   }, [goal, variationCount, setIsGenerating, setError, clearVariations, setVariations])
 
   const handleCopy = useCallback((id: string, text: string) => {
