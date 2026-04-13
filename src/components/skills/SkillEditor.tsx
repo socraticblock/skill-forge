@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useSkillsStore } from '../../stores/skillsStore'
 import { serializeSkill, skillToFilename } from '../../lib/parseSkill'
 import { SkillPreview } from './SkillPreview'
+import { StepList } from './StepList'
 
 export function SkillEditor() {
   const { editingSkill, isDirty, setIsDirty, setEditingSkill, currentSkill, skills, setSkills, setActiveTab } =
@@ -24,6 +25,13 @@ export function SkillEditor() {
   const handleBodyChange = useCallback(
     (value: string) => {
       updateField('body', value)
+    },
+    [updateField]
+  )
+
+  const handleStepsChange = useCallback(
+    (steps: import('../../types/skill').SkillStep[]) => {
+      updateField('steps', steps)
     },
     [updateField]
   )
@@ -227,6 +235,14 @@ export function SkillEditor() {
                   }}
                 />
               </div>
+            </div>
+
+            {/* Step list — drag-and-drop */}
+            <div className="form-field" style={{ marginTop: '1.5rem' }}>
+              <StepList
+                steps={editingSkill.steps}
+                onStepsChange={handleStepsChange}
+              />
             </div>
 
             {/* Verification */}
