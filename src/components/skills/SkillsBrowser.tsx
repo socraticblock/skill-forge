@@ -173,7 +173,7 @@ export function SkillsBrowser() {
               className="search-field"
             />
           </div>
-          <Button onClick={handleNewSkill} className="btn-primary">
+          <Button onClick={handleNewSkill} className="btn-primary" data-new-skill-btn>
             <Plus size={15} />
             New Skill
           </Button>

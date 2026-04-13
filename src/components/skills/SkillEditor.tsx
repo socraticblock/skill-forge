@@ -145,10 +145,10 @@ export function SkillEditor() {
             <RotateCcw size={13} />
             Reset
           </Button>
-          <Button size="sm" onClick={handleSave} disabled={!editingSkill.name.trim()}>
-            <Save size={13} />
-            Save Skill
-          </Button>
+            <Button size="sm" onClick={handleSave} disabled={!editingSkill.name.trim()} data-save-btn>
+              <Save size={13} />
+              Save Skill
+            </Button>
         </div>
       </div>
 

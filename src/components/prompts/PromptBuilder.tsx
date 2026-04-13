@@ -4,10 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { usePromptBuilderStore } from '../../stores/promptBuilderStore'
 import { useSkillsStore } from '../../stores/skillsStore'
+import { useSettingsStore } from '../../stores/settingsStore'
 import { PromptCard } from './PromptCard'
 import type { PromptVariation } from '../../types/skill'
-
-const API_BASE = 'http://localhost:8080'
 
 const VARIATION_DESCRIPTIONS: Record<number, string> = {
   1: 'One focused, refined prompt',
@@ -16,8 +15,8 @@ const VARIATION_DESCRIPTIONS: Record<number, string> = {
   4: 'Four diverse styles to find your perfect fit',
 }
 
-async function generateFromServer(goal: string, count: number): Promise<PromptVariation[]> {
-  const res = await fetch(`${API_BASE}/generate`, {
+async function generateFromServer(goal: string, count: number, proxyUrl: string): Promise<PromptVariation[]> {
+  const res = await fetch(`${proxyUrl}/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ goal, variation_count: count }),
@@ -52,6 +51,7 @@ export function PromptBuilder() {
   } = usePromptBuilderStore()
 
   const { setEditingSkill, setActiveTab } = useSkillsStore()
+  const { proxyUrl } = useSettingsStore()
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
   const handleGenerate = useCallback(async () => {
@@ -62,7 +62,7 @@ export function PromptBuilder() {
     clearVariations()
 
     try {
-      const newVariations = await generateFromServer(goal, variationCount)
+      const newVariations = await generateFromServer(goal, variationCount, proxyUrl)
       setVariations(newVariations)
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Generation failed'
@@ -70,7 +70,7 @@ export function PromptBuilder() {
     } finally {
       setIsGenerating(false)
     }
-  }, [goal, variationCount, setIsGenerating, setError, clearVariations, setVariations])
+  }, [goal, variationCount, setIsGenerating, setError, clearVariations, setVariations, proxyUrl])
 
   const handleCopy = useCallback((id: string, text: string) => {
     navigator.clipboard.writeText(text)
@@ -137,6 +137,7 @@ export function PromptBuilder() {
           onClick={handleGenerate}
           disabled={!goal.trim() || isGenerating}
           className="generate-btn"
+          data-generate-btn
         >
           {isGenerating ? (
             <>
@@ -156,7 +157,7 @@ export function PromptBuilder() {
         <div className="error-state">
           {error}
           <br />
-          <small>Make sure the Python proxy server is running: <code>python server/minimax_proxy.py</code></small>
+          <small>Make sure the Python proxy server is running at <code>{proxyUrl}</code></small>
         </div>
       )}
 
